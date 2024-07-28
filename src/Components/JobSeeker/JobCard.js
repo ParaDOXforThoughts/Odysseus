@@ -1,113 +1,95 @@
+/**
+ * JobCard Component
+ * 
+ * This component displays detailed information about a job posting. It is designed to show individual job cards
+ * within the JobSwiperView. Each card includes the job title, company name, location, salary, job type, industry,
+ * a description, key requirements, and skills. It also features a company logo displayed to the right of the text details.
+ * 
+ * Props:
+ * - job (object): An object containing job details such as title, company, location, salary, jobType, industry, 
+ *   description, requirements, and skills.
+ * 
+ * Usage:
+ * <JobCard job={jobData} />
+ */
+
 import React from 'react';
-import { Briefcase, MapPin, DollarSign, Clock, Building, Check, X } from 'lucide-react';
+import './JobCard.css';
+import Logo from '../../assets/images/Sailboat-Icon.jpg'; // Path to the company logo image
 
-const OdysseusJobCard = ({ job }) => {
+const JobCard = ({ job }) => {
+  // Check if job data is provided; if not, display a placeholder message
+  if (!job) {
+    return <div className="flex items-center justify-center h-full">No job data available</div>;
+  }
+
+  // Parse job requirements from JSON format, if available
+  const requirements = job.requirements ? JSON.parse(job.requirements) : [];
+
+  // Helper function to render job details with labels
+  const renderJobDetail = (label, value) => (
+    <p className="text-sm text-gray-700">
+      <span className="font-semibold">{label}:</span> {value || 'Not specified'}
+    </p>
+  );
+
   return (
-    <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-      <div className="bg-indigo-600 p-4 text-white">
-        <h1 className="text-2xl font-bold">Odysseus</h1>
-        <p className="text-sm">Your Career Journey</p>
-      </div>
-      <div className="p-8">
-        <div className="flex justify-between items-start mb-4">
-          <div>
+    <div className="flex flex-col h-full">
+      <div className="flex-grow overflow-y-auto">
+        {/* Job header section displaying job title, company, and location */}
+        <div className="job-header flex items-center">
+          {/* Text details on the left */}
+          <div className="text-details flex-grow">
             <h2 className="text-2xl font-bold text-gray-800">{job.title}</h2>
-            <p className="text-gray-600">{job.company}</p>
+            <h3 className="text-xl text-gray-600">{job.company}</h3>
+            <p className="text-sm text-gray-500">{job.location}</p>
           </div>
-          <span className="inline-block bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded">
-            {job.matchScore}% Match
-          </span>
-        </div>
-
-        <div className="flex justify-between items-center mb-6">
-          <div className="space-y-3">
-            <div className="flex items-center">
-              <MapPin className="h-5 w-5 text-indigo-500 mr-2" />
-              <p className="text-gray-700">{job.location}</p>
-            </div>
-            <div className="flex items-center">
-              <DollarSign className="h-5 w-5 text-indigo-500 mr-2" />
-              <p className="text-gray-700">{job.salary}</p>
-            </div>
-            <div className="flex items-center">
-              <Clock className="h-5 w-5 text-indigo-500 mr-2" />
-              <p className="text-gray-700">{job.jobType}</p>
-            </div>
-            <div className="flex items-center">
-              <Building className="h-5 w-5 text-indigo-500 mr-2" />
-              <p className="text-gray-700">{job.industry}</p>
-            </div>
-          </div>
-          <div className="flex-shrink-0 ml-4">
-            <img 
-              src={job.companyLogo || "/api/placeholder/80/80"}
-              src={job.companyLogo || "/api/placeholder/80/80"}
-              alt={`${job.company} logo`} 
-              className="h-20 w-20 rounded-full object-cover border-2 border-indigo-500"
-            />
+          {/* Company logo displayed to the right of text details */}
+          <div className="company-logo">
+            <img src={Logo} alt="Company Logo" className="rounded-full" />
           </div>
         </div>
 
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Job Description:</h3>
-          <p className="text-gray-600">{job.description}</p>
+        {/* Job details section */}
+        <div className="job-details">
+          {renderJobDetail('Salary', job.salary)}
+          {renderJobDetail('Job Type', job.jobType)}
+          {renderJobDetail('Industry', job.industry)}
         </div>
 
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Key Requirements:</h3>
-          <ul className="list-disc list-inside text-gray-600">
-            {job.requirements.map((req, index) => (
-              <li key={index}>{req}</li>
+        {/* Job description section */}
+        <div className="job-details">
+          <h4 className="text-lg font-semibold mb-2">Job Description:</h4>
+          <p className="text-sm text-gray-600">{job.description}</p>
+        </div>
+
+        {/* Key requirements section */}
+        <div className="job-details">
+          <h4 className="text-lg font-semibold mb-2">Key Requirements:</h4>
+          <ul className="list-none pl-0">
+            {requirements.map((req, index) => (
+              <li key={index} className="relative pl-6 mb-2 text-sm text-gray-600">
+                <span className="absolute left-0 top-0.5 text-indigo-500">•</span>
+                {req}
+              </li>
             ))}
           </ul>
         </div>
 
-        <div>
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Skills:</h3>
-          <div className="flex flex-wrap">
-            {job.skills.map((skill, index) => (
-              <span key={index} className="bg-indigo-100 text-indigo-800 text-sm font-semibold mr-2 mb-2 px-2.5 py-0.5 rounded">
-                {skill}
+        {/* Skills section */}
+        <div className="job-details mt-4">
+          <h4 className="text-lg font-semibold mb-2">Skills:</h4>
+          <div className="skills flex flex-wrap">
+            {job.skills.split(',').map((skill, index) => (
+              <span key={index} className="skill-tag bg-gray-200 text-gray-700 text-xs font-semibold mr-2 mb-2 px-2.5 py-0.5 rounded">
+                {skill.trim()}
               </span>
             ))}
           </div>
         </div>
       </div>
-
-      <div className="flex justify-center space-x-20 p-4 bg-indigo-600">
-        <button className="rounded-full bg-white p-4 hover:bg-indigo-100 transition-colors duration-200">
-          <X className="h-8 w-8 text-red-600" />
-        </button>
-        <button className="rounded-full bg-white p-4 hover:bg-indigo-100 transition-colors duration-200">
-          <Check className="h-8 w-8 text-green-600" />
-        </button>
-      </div>
     </div>
   );
 };
 
-// Example usage
-const App = () => {
-  const jobData = {
-    title: "Senior Software Engineer",
-    company: "TechCorp Inc.",
-    companyLogo: "/api/placeholder/80/80", // Replace with actual company logo URL
-    matchScore: 92,
-    location: "San Francisco, CA",
-    salary: "$120,000 - $160,000 per year",
-    jobType: "Full-time",
-    industry: "Information Technology",
-    description: "Join our innovative team at TechCorp Inc. as we embark on a journey to revolutionize the tech industry. As a Senior Software Engineer, you'll be at the forefront of developing cutting-edge solutions that shape the future.",
-    requirements: [
-      "5+ years of experience in software development",
-      "Strong proficiency in React, Node.js, and AWS",
-      "Experience with microservices architecture",
-      "Excellent problem-solving and communication skills"
-    ],
-    skills: ["React", "Node.js", "AWS", "Docker", "Kubernetes", "GraphQL"]
-  };
-
-  return <OdysseusJobCard job={jobData} />;
-};
-
-export default App;
+export default JobCard;
