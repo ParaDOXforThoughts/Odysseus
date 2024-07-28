@@ -54,4 +54,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 Matthew Rockwell - [matthew.h.rockwell@outlook.com](mailto:matthew.h.rockwell@outlook.com)
 
-Project Link: [https://github.com/ParaDOXforThoughts/Oddysseus](https://github.com/ParaDOXforThoughts/Odysseus)
+Project Link: [https://github.com/ParaDOXforThoughts/Odysseus](https://github.com/ParaDOXforThoughts/Odysseus)
